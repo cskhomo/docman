@@ -39,22 +39,29 @@ nav img:active {
     transform: scale(0.95);
 }
 
+header h1 {
+    margin-bottom: 8px;
+}
+
 header p {
     color: dimgray;
+}
+
+main p {
+    line-height: 1.6;
+}
+
+footer a img {
+    width: 28px;
+    margin-right: 8px;
+    transition: transform 0.2s;
+}
+
+footer a img:hover {
+    transform: scale(1.1);
 }
 
 hr {
     border: none;
     border-top: 1px solid lightgray;
-}
-
-@media (max-width: 768px) {
-
-    .nav-links a {
-        background-color: lightgrey;
-    }
-
-    .nav-links a:hover {
-        background-color: darkgrey;
-    }
 }
