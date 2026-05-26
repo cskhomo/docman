@@ -1,0 +1,43 @@
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 32px;
+}
+
+nav img {
+    width: 54px;
+    height: auto;
+}
+
+
+@media (max-width: 768px) {
+
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav img {
+        display: none;
+        width: 0;
+    }
+
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    nav ul a {
+        display: block;
+        width: 200px;
+        text-align: center;
+    }
+}

@@ -1,0 +1,52 @@
+nav ul {
+    list-style: none;
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: whitesmoke;
+    color: black;
+}
+
+nav a {
+    text-decoration: none;
+    font-size: 18px;
+    padding: 8px 12px;
+    transition: all 0.3s;
+}
+
+nav > ul a:hover {
+    background-color: darkgrey;
+    color: white;
+    border-radius: 4px;
+}
+
+nav a:visited {
+    color: black;
+}
+
+nav img {
+    transition: all 0.3s;
+}
+
+nav img:hover {
+    transform: scale(1.1);
+    filter: brightness(1.3);
+}
+
+nav img:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+
+    nav ul a {
+        background-color: lightgrey;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    nav ul a:hover {
+        background-color: darkgrey;
+    }
+}
