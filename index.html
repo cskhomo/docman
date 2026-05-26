@@ -1,94 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <title>Personal Portfolio</title>
-        <link rel="stylesheet" href="styles/layout.css">
-        <link rel="stylesheet" href="styles/style.css">
-    </head>
-    
-    <body>
-        <nav>
-            <a href="index.html"><img src="graphics/logo.png" alt="Portfolio Logo"></a>
-    
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="pages/about.html">About Me</a></li>
-                <li><a href="pages/contact.html">Contact Us</a></li>
-            </ul>
-        </nav>
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Portfolio</title>
 
-        <hr>
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
 
-        <header>         
-            <h1>Sleep Deprived Developer Portfolio!</h1>
-            <img src="graphics/cat++.gif" width="530" height="300" alt="cat button mashing gif">
-        </header>
+<body>
 
-        <br>
+    <nav>
+        <a href="index.html">
+            <img src="graphics/logo.png" alt="Portfolio Logo">
+        </a>
 
-        <main>
-            <table>
-                <tr>
-                    <td valign="top">
-                        <article>
-                            <h2>Sizwe Chris Khomo</h2>
-                            
-                            <p>I'm someone who enjoys learning new things <br>
-                                whilst building projects in my <em>"free"</em> time.
-                            </p>
-                            <p>I like solving problems, working on creative ideas, <br>
-                                and improving my skills step by step.</p>
-                            <p> Outside of tech, I enjoy a little of bit anime, <br>
-                                gaming, anime, and maybe a dash of anime. <br>
-                                (but not too much, obviously)
-                            </p>
-                        </article>
-                    </td>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages/about.html">About Me</a></li>
+            <li><a href="pages/contact.html">Contact Us</a></li>
+        </ul>
+    </nav>
 
-                    <td valign="bottom"><img src="graphics/headshot.png" width="200" alt="one handsome boi"></td>
-                </tr>
-                <tr><td colspan="2">
-                    <p> I’m always looking for ways to grow. I’m excited to see where this journey takes me. <br>
-                        I anticipate a mix of trying things and slowly improving whatever I’m working on. <br>
-                        Always implementing simple approaches, clear goals, and building incrementally. <br>
-                    </p>
-                </td></tr>
-            </table>
-        </main>
+    <hr>
 
-        <hr>
+    <header>
+        <h1>Sleep Deprived Developer Portfolio!</h1>
+        <img src="graphics/cat++.gif" alt="cat button mashing gif">
+    </header>
 
-        <footer>
-            <table>
-                <tr>
-                    <td>
-                        <h3>Location</h3>
+    <main>
 
-                        <address>
-                            KwaZulu-Natal<br>
-                            South Africa<br>
-                            Phone: +27 65 725 9160<br>
-                            Email: cs.khomo@outlook.com
-                        </address>
-                
-                        <h3>Socials</h3>
+        <section class="intro">
 
-                        <a href="https://github.com/cskhomo"><img src="graphics/github.png" alt="GitHub"></a>
-                        <a href="https://linkedin.com/in/cskhomo"><img src="graphics/linkedin.png" alt="LinkedIn"></a>
-                        <a href="https://instagram.com/chrisser_irl"><img src="graphics/instagram.png" alt="Instagram"></a>
-                    </td>
-                    
-                    <td width="15%"></td>
+            <article>
+                <h2>Sizwe Chris Khomo</h2>
 
-                    <td>
-                        <iframe src="https://www.google.com/maps?q=Pietermaritzburg,+KZN&output=embed" width="250" height="250" loading="lazy"></iframe>
-                    </td>     
-                </tr>
-            </table>
-                    
-            <p>&copy; A Developer that has not seen the sun in days, 2026. </p>
-        </footer>
-    </body> 
+                <p>I'm someone who enjoys learning new things whilst building projects in my <em>free</em> time.</p>
+                <p>I like solving problems, working on creative ideas, and improving my skills step by step.</p>
+                <p>Outside of tech, I enjoy anime, gaming, and maybe a dash of anime.</p>
+            </article>
+
+            <figure>
+                <img src="graphics/headshot.png" alt="one handsome boi">
+            </figure>
+
+        </section>
+
+        <section class="closing">
+            <p>
+                I’m always looking for ways to grow. I’m excited to see where this journey takes me.
+                I focus on simple approaches, clear goals, and building incrementally.
+            </p>
+        </section>
+
+    </main>
+
+    <hr>
+
+    <footer>
+
+        <address>
+            <h3>Location</h3>
+
+            KwaZulu-Natal<br>
+            South Africa<br>
+            Phone: +27 65 725 9160<br>
+            Email: cs.khomo@outlook.com
+        </address>
+
+        <section class="socials">
+            <h3>Socials</h3>
+
+            <a href="https://github.com/cskhomo"><img src="graphics/github.png" alt="GitHub"></a>
+            <a href="https://linkedin.com/in/cskhomo"><img src="graphics/linkedin.png" alt="LinkedIn"></a>
+            <a href="https://instagram.com/chrisser_irl"><img src="graphics/instagram.png" alt="Instagram"></a>
+        </section>
+
+        <figure class="map">
+            <iframe src="https://www.google.com/maps?q=Pietermaritzburg,+KZN&output=embed" loading="lazy"></iframe>
+        </figure>
+
+        <p>&copy; A Developer that has not seen the sun in days, 2026.</p>
+
+    </footer>
+
+</body>
+
 </html>

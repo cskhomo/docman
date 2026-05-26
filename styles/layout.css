@@ -1,25 +1,19 @@
 nav {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin: 16px 0px;
+    align-items: center;
+    margin: 16px 0;
 }
 
 .nav-links {
+    margin-right: 16px;
     display: flex;
     gap: 32px;
 }
 
 nav img {
     width: 54px;
-    height: auto;
 }
-
-nav a{
-    font-size: 18px;
-    padding: 8px 12px;
-}
-
 
 @media (max-width: 768px) {
 
@@ -30,17 +24,15 @@ nav a{
 
     nav img {
         display: none;
-        width: 0;
     }
 
-    nav ul {
-        display: flex;
+    .nav-links {
         flex-direction: column;
         align-items: center;
         width: 100%;
     }
 
-    nav ul a {
+    .nav-links a {
         display: block;
         width: 200px;
         text-align: center;
@@ -61,10 +53,6 @@ header {
 header h1 {
     font-size: 40px;
     margin-bottom: 8px;
-}
-
-header p {
-    font-size: 18px;
 }
 
 section {

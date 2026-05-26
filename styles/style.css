@@ -6,25 +6,28 @@ body {
     font-family: 'Inter', Arial, sans-serif;
     background-color: whitesmoke;
     color: black;
+    margin: 0;
 }
 
 nav a {
     text-decoration: none;
-    transition: all 0.3s;
+    font-size: 18px;
+    padding: 8px 12px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
 }
 
-nav > ul a:hover {
+.nav-links a:hover {
     background-color: darkgrey;
     color: white;
     border-radius: 4px;
 }
 
-nav a:visited {
+.nav-links a:visited {
     color: black;
 }
 
 nav img {
-    transition: all 0.3s;
+    transition: transform 0.3s, filter 0.3s;
 }
 
 nav img:hover {
@@ -36,23 +39,22 @@ nav img:active {
     transform: scale(0.95);
 }
 
-@media (max-width: 768px) {
-
-    nav ul a {
-        background-color: lightgrey;
-    }
-
-    nav ul a:hover {
-        background-color: darkgrey;
-    }
-}
-
 header p {
     color: dimgray;
 }
 
-
 hr {
     border: none;
     border-top: 1px solid lightgray;
+}
+
+@media (max-width: 768px) {
+
+    .nav-links a {
+        background-color: lightgrey;
+    }
+
+    .nav-links a:hover {
+        background-color: darkgrey;
+    }
 }
