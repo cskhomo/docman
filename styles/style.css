@@ -10,8 +10,6 @@ body {
 
 nav a {
     text-decoration: none;
-    font-size: 18px;
-    padding: 8px 12px;
     transition: all 0.3s;
 }
 
@@ -42,8 +40,6 @@ nav img:active {
 
     nav ul a {
         background-color: lightgrey;
-        padding: 12px;
-        border-radius: 8px;
     }
 
     nav ul a:hover {
