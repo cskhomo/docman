@@ -49,5 +49,5 @@ def table_to_markdown(table):
 
 
 if __name__ == "__main__":
-    result = pdf_to_markdown("temp/invoice.pdf")
+    result = pdf_to_markdown("cache/invoice.pdf")
     print(result)
