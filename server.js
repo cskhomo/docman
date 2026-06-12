@@ -1,13 +1,28 @@
-const express = require("express")
-const app = express()
+const express = require("express");
+const cors = require("cors");
 
-app.use(express.json())
+const app = express();
 
-const users = ["love", "hate"]
+app.use(cors());
+app.use(express.json());
 
-app.get("/users", (request, response) => {
-  response.json(users)
-})
+app.get("/users", (req, res) => {
+    res.json(["love", "hate"]);
+});
 
-app.listen(8000)
+app.post("/signup", (req, res) => {
 
+    console.log("Received:");
+    console.log(req.body);
+
+    res.json({
+        success: true,
+        message: "User received",
+        data: req.body
+    });
+
+});
+
+app.listen(8000, "0.0.0.0", () => {
+    console.log("Server running on port 8000");
+});
