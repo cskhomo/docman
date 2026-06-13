@@ -1,53 +1,70 @@
-import pdfplumber
+import json
 
-def pdf_to_markdown(pdf_path, output_path="temp/output.md"):
-    markdown = "# Extracted Invoice\n\n"
+from os import getenv
+from dotenv import load_dotenv
 
-    with pdfplumber.open(pdf_path) as pdf:
-        for i, page in enumerate(pdf.pages, start=1):
-
-            text = page.extract_text()
-
-            markdown += f"## Page {i}\n\n"
-
-            if text:
-                markdown += text + "\n\n"
-            else:
-                markdown += "_No extractable text_\n\n"
-
-            # Extract tables if present
-            tables = page.extract_tables()
-
-            if tables:
-                for table in tables:
-                    markdown += table_to_markdown(table)
-                    markdown += "\n\n"
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(markdown)
-
-    return markdown
+from google.api_core.client_options import ClientOptions
+from google.cloud import documentai
 
 
-def table_to_markdown(table):
-    if not table or len(table) == 0:
-        return ""
-
-    # Clean rows
-    cleaned = [[cell if cell is not None else "" for cell in row] for row in table]
-
-    header = cleaned[0]
-    body = cleaned[1:]
-
-    md = "| " + " | ".join(header) + " |\n"
-    md += "| " + " | ".join(["---"] * len(header)) + " |\n"
-
-    for row in body:
-        md += "| " + " | ".join(row) + " |\n"
-
-    return md
+RAW_FILE = "storage/temp/raw_invoice.json"
 
 
-if __name__ == "__main__":
-    result = pdf_to_markdown("cache/invoice.pdf")
-    print(result)
+def extract_document(file_path, mime_type):
+
+    load_dotenv()
+
+    project = getenv("PROJECT")
+    processor = getenv("PROCESSOR")
+    location = "australia-southeast1"
+
+    client = documentai.DocumentProcessorServiceClient(
+        client_options=ClientOptions(
+            api_endpoint=f"{location}-documentai.googleapis.com"
+        )
+    )
+
+    processor_path = client.processor_path(
+        project,
+        location,
+        processor
+    )
+
+    with open(file_path, "rb") as file:
+        content = file.read()
+
+    raw_document = documentai.RawDocument(
+        content=content,
+        mime_type=mime_type
+    )
+
+    request = documentai.ProcessRequest(
+        name=processor_path,
+        raw_document=raw_document
+    )
+
+    result = client.process_document(
+        request=request
+    )
+
+    entities = []
+
+    for entity in result.document.entities:
+
+        entities.append({
+            "type": entity.type_,
+            "mention_text": entity.mention_text,
+            "confidence": entity.confidence,
+            "normalized_value": (
+                entity.normalized_value.text
+                if entity.normalized_value
+                else None
+            )
+        })
+
+    with open(RAW_FILE, "w") as file:
+        json.dump(
+            entities,
+            file,
+            indent=4
+        )

@@ -1,24 +1,40 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+from pathlib import Path
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+from data.extract import extract_document
+from data.normalize import load_raw_entities
+from data.normalize import transform_invoice
+from data.normalize import save_invoice
+from data.audit import log_invoice
+from data.store import insert_document
 
 
-@app.post("/")
-async def receive_data(request: Request):
-    data = await request.json()
-    print(data)
-    return {"status": "received"}
+def main():
+
+    Path("storage/temp").mkdir(parents=True, exist_ok=True)
+
+    extract_document(
+        file_path="storage/cache/invoice.pdf",
+        mime_type="application/pdf"
+    )
+
+    entities = load_raw_entities()
+
+    invoice = transform_invoice(entities)
+
+    save_invoice(invoice)
+
+    audit_record = log_invoice(invoice)
+
+    insert_document(
+        uploader=1,
+        document=invoice,
+        document_type="invoice"
+    )
+
+    print("Saved raw_invoice.json")
+    print("Saved invoice.json")
+    print("Inserted into database:")
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    main()

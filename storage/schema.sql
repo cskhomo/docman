@@ -9,10 +9,10 @@ CREATE TABLE IF NOT EXISTS documents (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     uploader INTEGER NOT NULL,
     vendor TEXT,
-    invoice_number TEXT,
     invoice_date TEXT,
     amount REAL,
     vat REAL,
+    invoice_number TEXT,
     type TEXT NOT NULL
 		CHECK(type IN ('invoice', 'credit_note')),
     
