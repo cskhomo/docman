@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auth</title>
+</head>
+<body>
+
+    <!-- SIGN UP -->
+    <div id="signup-view">
+
+        <h2>Sign Up</h2>
+
+        <form id="signup-form">
+
+            <input type="email" id="signup-email" placeholder="email" required>
+            <br><br>
+
+            <input type="password" id="signup-password" placeholder="password" required>
+            <br><br>
+
+            <button type="submit">Create Account</button>
+
+        </form>
+
+        <button onclick="showLogin()">Go to Login</button>
+    </div>
+
+
+    <!-- LOGIN -->
+    <div id="login-view" hidden>
+
+        <h2>Login</h2>
+
+        <form id="login-form">
+
+            <input type="email" id="login-email" placeholder="email" required>
+            <br><br>
+
+            <input type="password" id="login-password" placeholder="password" required>
+            <br><br>
+
+            <button type="submit">Login</button>
+
+        </form>
+
+        <button onclick="showSignup()">Go to Signup</button>
+    </div>
+
+
+    <script src="login.js"></script>
+</body>
+</html>
