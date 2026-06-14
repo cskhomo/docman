@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload PDF</title>
+
+    <link rel="stylesheet" href="/web/styles/upload.css">
+
+    <script src="/web/scripts/redirect.js" defer></script>
+    <script src="/web/scripts/upload.js" defer></script>
+</head>
+<body>
+    <div class="container">
+
+        <button
+            id="back_btn"
+            class="back-btn"
+            type="button"
+        >
+            ← Dashboard
+        </button>
+
+        <h1>Upload Document</h1>
+
+        <form
+            id="upload_form"
+            action="/upload"
+            method="post"
+            enctype="multipart/form-data"
+        >
+            <input
+                type="file"
+                id="file_input"
+                name="file"
+                accept="application/pdf"
+            >
+
+            <button type="submit">
+                Upload
+            </button>
+        </form>
+
+        <div id="error_text" class="error"></div>
+
+    </div>
+</body>
+</html>
