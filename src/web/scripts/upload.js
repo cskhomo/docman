@@ -1,5 +1,14 @@
 document.addEventListener("DOMContentLoaded", page_init);
 
+const loading_messages = [
+    "Saving PDF...",
+    "Extracting invoice fields...",
+    "Normalising invoice data...",
+    "Writing invoice to database..."
+];
+
+let loading_timer = null;
+
 function page_init() {
     document
         .getElementById("upload_form")
@@ -57,6 +66,8 @@ function check_file(e) {
 
         return;
     }
+    
+    show_loading();    
 }
 
 function check_error() {
@@ -81,6 +92,35 @@ function check_error() {
         document.title,
         window.location.pathname
     );
+}
+
+function show_loading() {
+
+    document.getElementById("back_btn").style.display = "none";
+
+    document.getElementById("upload_form").style.display = "none";
+
+    document.getElementById("error_text").classList.remove("show");
+
+    document.getElementById("loading_view").classList.add("show");
+
+    let index = 0;
+
+    const loading_text = document.getElementById("loading_text");
+
+    loading_text.textContent = loading_messages[index];
+
+    loading_timer = setInterval(() => {
+
+        index++;
+
+        if (index >= loading_messages.length) {
+            loading_text.textContent = "You will be redirected soon..."
+        }
+
+        loading_text.textContent = loading_messages[index];
+
+    }, 5000);
 }
 
 function goto_dashboard() {

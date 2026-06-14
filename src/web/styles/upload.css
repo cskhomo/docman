@@ -28,6 +28,7 @@ body {
     gap: 28px;
 
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+
 }
 
 .back-btn {
@@ -129,4 +130,36 @@ button[type="submit"]:hover {
 
 .error.show {
     display: block;
+}
+
+
+.loading-view {
+    display: none;
+    width: 100%;
+    min-height: 120px;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-view.show {
+    display: flex;
+}
+
+.loading-text {
+    font-size: 15px;
+    color: #525252;
+    font-weight: 400;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
 }

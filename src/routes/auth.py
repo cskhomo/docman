@@ -1,126 +1,53 @@
-from pathlib import Path
-import os
-import sqlite3
-import bcrypt
-import jwt
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
-
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
+from data.read import get_user_by_email
+from data.write import create_user
+from core.authorise import (
+    hash_password,
+    verify_password,
+    create_token,
+    decode_token
+)
+
 router = APIRouter()
-
-# ----------------------------
-# PATH RESOLUTION (CRITICAL)
-# ----------------------------
-BASE_DIR = Path(__file__).resolve().parent.parent        # src/
-ROOT_DIR = BASE_DIR.parent                               # docman/
-ENV_PATH = BASE_DIR / ".env"
-STORAGE_DIR = ROOT_DIR / "storage"
-DB_PATH = STORAGE_DIR / "transactions.db"
-
-load_dotenv(dotenv_path=ENV_PATH)
-
-JWT_SECRET = os.getenv("JWT_SECRET")
-JWT_ALGORITHM = "HS256"
-TOKEN_EXP_MINUTES = 60 * 24  # 24h session
+security = HTTPBearer()
 
 
-if not JWT_SECRET:
-    raise RuntimeError("JWT_SECRET not loaded. Check src/.env")
-
-
-# ----------------------------
-# REQUEST MODELS
-# ----------------------------
 class AuthRequest(BaseModel):
     email: str
     password: str
 
 
-# ----------------------------
-# DB HELPER
-# ----------------------------
-def get_db():
-    conn = sqlite3.connect(str(DB_PATH))
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-# ----------------------------
-# TOKEN CREATION
-# ----------------------------
-def create_token(user_id: int, email: str, role: str):
-    payload = {
-        "user_id": user_id,
-        "email": email,
-        "role": role,
-        "exp": datetime.utcnow() + timedelta(minutes=TOKEN_EXP_MINUTES)
-    }
-
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-
-
-# ----------------------------
-# SIGNUP
-# ----------------------------
 @router.post("/auth/signup")
 def signup(data: AuthRequest):
 
-    conn = get_db()
-    cursor = conn.cursor()
-
-    # check duplicate email
-    cursor.execute("SELECT id FROM accounts WHERE email = ?", (data.email,))
-    existing = cursor.fetchone()
+    existing = get_user_by_email(data.email)
 
     if existing:
-        conn.close()
         return {"status": "fail", "reason": "Email already exists"}
 
-    # hash password
-    password_hash = bcrypt.hashpw(
-        data.password.encode("utf-8"),
-        bcrypt.gensalt()
-    ).decode("utf-8")
+    password_hash = hash_password(data.password)
 
-    cursor.execute(
-        "INSERT INTO accounts (email, password_hash, role) VALUES (?, ?, ?)",
-        (data.email, password_hash, "viewer")
+    create_user(
+        email=data.email,
+        password_hash=password_hash,
+        role="viewer"
     )
-
-    conn.commit()
-    conn.close()
 
     return {"status": "success"}
 
 
-# ----------------------------
-# LOGIN
-# ----------------------------
 @router.post("/auth/login")
 def login(data: AuthRequest):
 
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT id, email, password_hash, role FROM accounts WHERE email = ?",
-        (data.email,)
-    )
-
-    user = cursor.fetchone()
-    conn.close()
+    user = get_user_by_email(data.email)
 
     if not user:
         return {"status": "fail", "reason": "Invalid credentials"}
 
-    # verify password
-    if not bcrypt.checkpw(
-        data.password.encode("utf-8"),
-        user["password_hash"].encode("utf-8")
-    ):
+    if not verify_password(data.password, user["password_hash"]):
         return {"status": "fail", "reason": "Invalid credentials"}
 
     token = create_token(user["id"], user["email"], user["role"])
@@ -134,3 +61,29 @@ def login(data: AuthRequest):
             "role": user["role"]
         }
     }
+
+
+@router.get("/auth/validate")
+def validate_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+
+    token = credentials.credentials
+
+    try:
+        payload = decode_token(token)
+
+        return {
+            "status": "success",
+            "user": {
+                "id": payload["user_id"],
+                "email": payload["email"],
+                "role": payload["role"]
+            }
+        }
+
+    except Exception:
+        return {
+            "status": "fail",
+            "reason": "Invalid or expired token"
+        }

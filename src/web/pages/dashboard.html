@@ -3,10 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+
+    <link rel="stylesheet" href="/web/styles/dashboard.css">
+
+    <script src="/web/scripts/redirect.js" defer></script>
+    <script src="/web/scripts/dashboard.js" defer></script>
 </head>
+
 <body>
 
-    <h1>Dashboard</h1>
+    <div class="topbar">
+
+        <div class="nav_left">
+            <button onclick="goto_upload()">Upload</button>
+            <button onclick="goto_insights()">Insights</button>
+        </div>
+
+        <div class="nav_right">
+            <button onclick="approve_selected()">Approve</button>
+            <button onclick="reject_selected()">Reject</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+
+    </div>
+
+    <div class="container">
+
+        <table class="invoice_table">
+
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Invoice #</th>
+                    <th>Vendor</th>
+                    <th>Date</th>
+                    <th>Due</th>
+                    <th>VAT</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="table_body"></tbody>
+
+        </table>
+
+    </div>
 
 </body>
 </html>

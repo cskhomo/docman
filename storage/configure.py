@@ -39,17 +39,15 @@ def create_tables(connection):
     """)
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS documents (
+        CREATE TABLE IF NOT EXISTS invoices (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            invoice_number TEXT,
             vendor TEXT,
-            invoice_date TEXT,
-            amount REAL,
+            date TEXT,
+            due TEXT,
             currency TEXT,
             vat REAL,
-            invoice_number TEXT,
-            
-            type TEXT NOT NULL
-                CHECK(type IN ('invoice', 'credit_note')),
+            total REAL,
 
             reviewer_status TEXT NOT NULL DEFAULT 'pending'
                 CHECK(reviewer_status IN ('pending', 'approved', 'rejected')),

@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from os import getenv
 from dotenv import load_dotenv
@@ -7,7 +8,14 @@ from google.api_core.client_options import ClientOptions
 from google.cloud import documentai
 
 
-RAW_FILE = "storage/temp/raw_invoice.json"
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+STORAGE_DIR = BASE_DIR / "storage"
+TEMP_DIR = STORAGE_DIR / "temp"
+
+TEMP_DIR.mkdir(parents=True, exist_ok=True)
+
+RAW_FILE = TEMP_DIR / "raw_invoice.json"
 
 
 def extract_document(file_path, mime_type):
