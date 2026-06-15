@@ -1,0 +1,92 @@
+[
+    {
+        "type": "total_amount",
+        "mention_text": "93.50",
+        "confidence": 0.9903936982154846,
+        "normalized_value": "93.5"
+    },
+    {
+        "type": "due_date",
+        "mention_text": "January 31, 2016",
+        "confidence": 0.9875177145004272,
+        "normalized_value": "2016-01-31"
+    },
+    {
+        "type": "invoice_date",
+        "mention_text": "January 25, 2016",
+        "confidence": 0.9879780411720276,
+        "normalized_value": "2016-01-25"
+    },
+    {
+        "type": "invoice_id",
+        "mention_text": "INV-3337",
+        "confidence": 0.9814187288284302,
+        "normalized_value": null
+    },
+    {
+        "type": "net_amount",
+        "mention_text": "85.00",
+        "confidence": 0.9798026084899902,
+        "normalized_value": "85"
+    },
+    {
+        "type": "total_tax_amount",
+        "mention_text": "8.50",
+        "confidence": 0.965719997882843,
+        "normalized_value": "8.5"
+    },
+    {
+        "type": "currency",
+        "mention_text": "$",
+        "confidence": 0.8224617838859558,
+        "normalized_value": "USD"
+    },
+    {
+        "type": "supplier_email",
+        "mention_text": "admin@slicedinvoices.com",
+        "confidence": 0.814825713634491,
+        "normalized_value": null
+    },
+    {
+        "type": "supplier_name",
+        "mention_text": "Sliced Invoices",
+        "confidence": 0.6308823227882385,
+        "normalized_value": null
+    },
+    {
+        "type": "payment_terms",
+        "mention_text": "Payment is due within 30 days",
+        "confidence": 0.5364304780960083,
+        "normalized_value": null
+    },
+    {
+        "type": "remit_to_address",
+        "mention_text": "123 Somewhere St\nMelbourne, VIC 3000",
+        "confidence": 0.24158704280853271,
+        "normalized_value": null
+    },
+    {
+        "type": "supplier_address",
+        "mention_text": "Suite 5A-1204",
+        "confidence": 0.1181645318865776,
+        "normalized_value": null
+    },
+    {
+        "type": "line_item",
+        "mention_text": "1.00 85.00 85.00",
+        "confidence": 1.0,
+        "normalized_value": null
+    },
+    {
+        "type": "line_item",
+        "mention_text": "Web Design",
+        "confidence": 1.0,
+        "normalized_value": null
+    },
+    {
+        "type": "line_item",
+        "mention_text": "This is a sample description...",
+        "confidence": 1.0,
+        "normalized_value": null
+    }
+]

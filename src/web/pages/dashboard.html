@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="/web/styles/dashboard.css">
+
+    <script src="/web/scripts/redirect.js" defer></script>
+    <script src="/web/scripts/dashboard.js" defer></script>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <button class="nav_link" onclick="goto_insights()">Insights</button>
+    </div>
+
+    <div class="container">
+
+        <div class="action_bar">
+
+            <div class="action_left">
+                <button onclick="goto_upload()">Upload Invoice</button>
+                <button onclick="export_pdf()">Export PDF</button>
+                <button onclick="export_excel()">Export Excel/CSV</button>
+            </div>
+
+            <div class="action_right">
+                <button onclick="approve_selected()">Approve</button>
+                <button class="reject" onclick="reject_selected()">Reject</button>
+                <button class="logout_button" onclick="logout()">Logout</button>
+            </div>
+
+        </div>
+
+        <div class="table_container">
+
+            <table class="invoice_table">
+
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Invoice #</th>
+                        <th>Vendor</th>
+                        <th>Date</th>
+                        <th>Due</th>
+                        <th>VAT</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="table_body"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
