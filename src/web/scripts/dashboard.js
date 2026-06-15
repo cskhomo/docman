@@ -13,14 +13,12 @@ async function load_data() {
     try {
         const res = await fetch("/documents", {
             headers: {
-                "Authorization": `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             }
         });
 
         const data = await res.json();
-
         invoices = data.documents || [];
-
     } catch (err) {
         invoices = [];
     }
@@ -34,17 +32,13 @@ function render_table() {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>
-                <input type="checkbox" data-index="${index}">
-            </td>
-
+            <td><input type="checkbox" data-index="${index}"></td>
             <td>${doc.invoice_number || ""}</td>
             <td>${doc.vendor || ""}</td>
             <td>${doc.date || ""}</td>
             <td>${doc.due || ""}</td>
             <td>${doc.vat || 0}</td>
             <td>${doc.total || 0}</td>
-
             <td>${get_status(doc)}</td>
         `;
 
@@ -52,86 +46,87 @@ function render_table() {
     });
 }
 
-function get_selected() {
-    const checks = document.querySelectorAll("input[type='checkbox']:checked");
-
-    return Array.from(checks).map(c => {
-        return invoices[c.dataset.index];
-    });
-}
-
 function get_status(doc) {
+    if (doc.reviewer_status === "rejected") return "rejected by reviewer";
+    if (doc.manager_status === "rejected") return "rejected by manager";
+    if (doc.admin_status === "rejected") return "rejected by admin";
 
-    if (
-        doc.reviewer_status === "rejected" ||
-        doc.manager_status === "rejected" ||
-        doc.admin_status === "rejected"
-    ) {
-        return "rejected";
-    }
-
-    if (doc.reviewer_status === "pending") {
-        return "pending_reviewer";
-    }
-
-    if (doc.manager_status === "pending") {
-        return "pending_manager";
-    }
-
-    if (doc.admin_status === "pending") {
-        return "pending_admin";
-    }
+    if (doc.reviewer_status === "pending") return "pending reviewer approval";
+    if (doc.manager_status === "pending") return "pending manager approval";
+    if (doc.admin_status === "pending") return "pending final approval";
 
     return "approved";
 }
 
+function export_pdf() {
+    const win = window.open("", "", "width=900,height=700");
 
-async function approve_selected() {
-    const selected = get_selected();
+    const table = document.querySelector(".invoice_table").cloneNode(true);
 
-    for (const doc of selected) {
-        await send_action(doc.id, "approve");
-    }
+    table.querySelectorAll("th:first-child, td:first-child").forEach(el => el.remove());
 
-    await reload();
+    win.document.write(`
+        <html>
+        <head>
+            <title>Invoice Export</title>
+            <style>
+                body { font-family: Arial; }
+                table { width:100%; border-collapse: collapse; }
+                th, td { border:1px solid #ddd; padding:8px; font-size:12px; }
+                th { background:#f5f5f5; }
+            </style>
+        </head>
+        <body>
+            <h3>Invoice Report</h3>
+            ${table.outerHTML}
+        </body>
+        </html>
+    `);
+
+    win.document.close();
+    win.print();
 }
 
-async function reject_selected() {
-    const selected = get_selected();
+function export_excel() {
+    let csv = [];
 
-    for (const doc of selected) {
-        await send_action(doc.id, "reject");
-    }
+    csv.push([
+        "Invoice #",
+        "Vendor",
+        "Date",
+        "Due",
+        "VAT",
+        "Total",
+        "Status"
+    ].join(","));
 
-    await reload();
+    invoices.forEach(doc => {
+        csv.push([
+            doc.invoice_number || "",
+            doc.vendor || "",
+            doc.date || "",
+            doc.due || "",
+            doc.vat || 0,
+            doc.total || 0,
+            get_status(doc)
+        ].join(","));
+    });
+
+    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "invoices.csv";
+    a.click();
+
+    URL.revokeObjectURL(url);
 }
 
-async function send_action(id, action) {
-    const token = localStorage.getItem("token");
+function approve_selected() {}
 
-    try {
-        await fetch("/documents/update_status", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                id,
-                action
-            })
-        });
-
-    } catch (err) {
-        console.log("update failed", err);
-    }
-}
-
-async function reload() {
-    await load_data();
-    render_table();
-}
-
+function reject_selected() {}
 
 function goto_upload() {
     window.location.href = "/web/pages/upload.html";

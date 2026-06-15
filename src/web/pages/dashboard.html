@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
 
     <link rel="stylesheet" href="/web/styles/dashboard.css">
@@ -13,40 +14,49 @@
 <body>
 
     <div class="topbar">
-
-        <div class="nav_left">
-            <button onclick="goto_upload()">Upload</button>
-            <button onclick="goto_insights()">Insights</button>
-        </div>
-
-        <div class="nav_right">
-            <button onclick="approve_selected()">Approve</button>
-            <button onclick="reject_selected()">Reject</button>
-            <button onclick="logout()">Logout</button>
-        </div>
-
+        <button class="nav_link" onclick="goto_insights()">Insights</button>
     </div>
 
     <div class="container">
 
-        <table class="invoice_table">
+        <div class="action_bar">
 
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Invoice #</th>
-                    <th>Vendor</th>
-                    <th>Date</th>
-                    <th>Due</th>
-                    <th>VAT</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+            <div class="action_left">
+                <button onclick="goto_upload()">Upload Invoice</button>
+                <button onclick="export_pdf()">Export PDF</button>
+                <button onclick="export_excel()">Export Excel/CSV</button>
+            </div>
 
-            <tbody id="table_body"></tbody>
+            <div class="action_right">
+                <button onclick="approve_selected()">Approve</button>
+                <button class="reject" onclick="reject_selected()">Reject</button>
+                <button class="logout_button" onclick="logout()">Logout</button>
+            </div>
 
-        </table>
+        </div>
+
+        <div class="table_container">
+
+            <table class="invoice_table">
+
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Invoice #</th>
+                        <th>Vendor</th>
+                        <th>Date</th>
+                        <th>Due</th>
+                        <th>VAT</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="table_body"></tbody>
+
+            </table>
+
+        </div>
 
     </div>
 

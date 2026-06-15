@@ -25,3 +25,29 @@ def get_user_by_email(email: str):
     conn.close()
 
     return dict(user) if user else None
+    
+def get_all_invoices():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            invoice_number,
+            vendor,
+            date,
+            due,
+            currency,
+            vat,
+            total,
+            reviewer_status,
+            manager_status,
+            admin_status
+        FROM invoices
+        ORDER BY id DESC
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [dict(row) for row in rows]
