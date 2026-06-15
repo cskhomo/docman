@@ -2,7 +2,9 @@ import json
 import hashlib
 from pathlib import Path
 
-LOG_FILE = Path("storage/log.json")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+LOG_FILE = BASE_DIR / "storage" / "log.json"
 
 
 def ensure_log_exists():
@@ -48,3 +50,21 @@ def log_invoice(invoice):
     save_log(existing_log)
 
     return record
+    
+def check_duplicate(invoice):
+
+    existing_log = load_log()
+
+    invoice_number = invoice.get("invoice_number")
+    vendor = invoice.get("vendor")
+    amount = invoice.get("total")
+
+    for record in existing_log:
+
+        if record.get("invoice_number") == invoice_number:
+            return {"valid": False, "reason": "duplicate invoice number"}
+
+        if (record.get("vendor") == vendor and record.get("amount") == amount):
+            return {"valid": False, "reason": "duplicate document / double charge detected"}
+
+    return {"valid": True, "reason": None}

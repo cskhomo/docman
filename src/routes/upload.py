@@ -11,6 +11,8 @@ from core.normalize import save_invoice
 from core.validate import validate_invoice
 
 from data.write import insert_invoice
+from data.log import check_duplicate
+from data.log import log_invoice
 
 router = APIRouter()
 
@@ -24,7 +26,6 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 async def upload(file: UploadFile = File(...)):
 
     file_path = CACHE_DIR / file.filename
-
     content = await file.read()
 
     with open(file_path, "wb") as f:
@@ -36,29 +37,41 @@ async def upload(file: UploadFile = File(...)):
     )
 
     entities = load_raw_entities()
-
     invoice = transform_invoice(entities)
 
     save_invoice(invoice)
-
     validation = validate_invoice()
 
     if not validation["valid"]:
-
         missing = ", ".join(validation["missing"])
-
-        error_message = (
-            f"Missing required fields: {missing}"
-        )
 
         return RedirectResponse(
             url=(
                 "/web/pages/upload.html"
-                f"?error={quote(error_message)}"
+                f"?error={quote(f'Missing required fields: {missing}')}"
             ),
             status_code=303
         )
 
+
+    log_record = {
+        "invoice_number": invoice.get("invoice_number"),
+        "vendor": invoice.get("vendor"),
+        "amount": invoice.get("total")
+    }
+
+    dup_check = check_duplicate(invoice)
+
+    if not dup_check["valid"]:
+        return RedirectResponse(
+            url=(
+                "/web/pages/upload.html"
+                f"?error={quote(dup_check['reason'])}"
+            ),
+            status_code=303
+        )
+
+    log_invoice(invoice)
     insert_invoice(invoice)
 
     return RedirectResponse(
