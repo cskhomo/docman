@@ -1,1 +1,4 @@
-.vscode
+spec.pdf
+*env*
+*pycache*
+*temp/

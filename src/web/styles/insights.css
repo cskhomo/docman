@@ -1,0 +1,13 @@
+@import url("/web/styles/dashboard.css");
+
+.action_right {
+    display: flex;
+    gap: 12px;
+}
+
+.summary_table,
+.vendor_table,
+.insight_table {
+    width: 100%;
+    border-collapse: collapse;
+}
