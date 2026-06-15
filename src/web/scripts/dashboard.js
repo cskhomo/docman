@@ -18,6 +18,7 @@ async function load_data() {
         });
 
         const data = await res.json();
+
         invoices = data.documents || [];
     } catch (err) {
         invoices = [];
@@ -26,6 +27,7 @@ async function load_data() {
 
 function render_table() {
     const body = document.getElementById("table_body");
+
     body.innerHTML = "";
 
     invoices.forEach((doc, index) => {
@@ -56,6 +58,28 @@ function get_status(doc) {
     if (doc.admin_status === "pending") return "pending final approval";
 
     return "approved";
+}
+
+function show_dashboard() {
+    document.getElementById("dashboard_view").hidden = false;
+    document.getElementById("insights_view").hidden = true;
+
+    document.getElementById("dashboard_tab").classList.add("active");
+    document.getElementById("insights_tab").classList.remove("active");
+
+    document.getElementById("approve_btn").hidden = false;
+    document.getElementById("reject_btn").hidden = false;
+}
+
+function show_insights() {
+    document.getElementById("dashboard_view").hidden = true;
+    document.getElementById("insights_view").hidden = false;
+
+    document.getElementById("dashboard_tab").classList.remove("active");
+    document.getElementById("insights_tab").classList.add("active");
+
+    document.getElementById("approve_btn").hidden = true;
+    document.getElementById("reject_btn").hidden = true;
 }
 
 function export_pdf() {
@@ -112,11 +136,14 @@ function export_excel() {
         ].join(","));
     });
 
-    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+    const blob = new Blob([csv.join("\n")], {
+        type: "text/csv"
+    });
 
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
+
     a.href = url;
     a.download = "invoices.csv";
     a.click();
@@ -130,10 +157,6 @@ function reject_selected() {}
 
 function goto_upload() {
     window.location.href = "/web/pages/upload.html";
-}
-
-function goto_insights() {
-    window.location.href = "/web/pages/insights.html";
 }
 
 function logout() {

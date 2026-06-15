@@ -13,10 +13,6 @@
 
 <body>
 
-    <div class="topbar">
-        <button class="nav_link" onclick="goto_insights()">Insights</button>
-    </div>
-
     <div class="container">
 
         <div class="action_bar">
@@ -28,33 +24,65 @@
             </div>
 
             <div class="action_right">
-                <button onclick="approve_selected()">Approve</button>
-                <button class="reject" onclick="reject_selected()">Reject</button>
+                <button id="approve_btn" onclick="approve_selected()">Approve</button>
+                <button id="reject_btn" class="reject" onclick="reject_selected()">Reject</button>
                 <button class="logout_button" onclick="logout()">Logout</button>
             </div>
 
         </div>
 
-        <div class="table_container">
+        <div class="view_tabs">
+            <button
+                id="dashboard_tab"
+                class="tab_button active"
+                onclick="show_dashboard()">
+                Dashboard
+            </button>
 
-            <table class="invoice_table">
+            <button
+                id="insights_tab"
+                class="tab_button"
+                onclick="show_insights()">
+                Insights
+            </button>
+        </div>
 
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Invoice #</th>
-                        <th>Vendor</th>
-                        <th>Date</th>
-                        <th>Due</th>
-                        <th>VAT</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+        <div id="dashboard_view">
 
-                <tbody id="table_body"></tbody>
+            <div class="table_container">
 
-            </table>
+                <table class="invoice_table">
+
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Invoice #</th>
+                            <th>Vendor</th>
+                            <th>Date</th>
+                            <th>Due</th>
+                            <th>VAT</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="table_body"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div id="insights_view" hidden>
+
+            <div class="table_container">
+
+                <div class="insights_body">
+                    Insights
+                </div>
+
+            </div>
 
         </div>
 
