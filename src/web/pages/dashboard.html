@@ -9,6 +9,7 @@
 
     <script src="/web/scripts/redirect.js" defer></script>
     <script src="/web/scripts/dashboard.js" defer></script>
+    <script src="/web/scripts/approvals.js" defer></script>
 </head>
 
 <body>
@@ -32,6 +33,7 @@
         </div>
 
         <div class="view_tabs">
+
             <button
                 id="dashboard_tab"
                 class="tab_button active"
@@ -45,6 +47,7 @@
                 onclick="show_insights()">
                 Insights
             </button>
+
         </div>
 
         <div id="dashboard_view">
@@ -76,10 +79,46 @@
 
         <div id="insights_view" hidden>
 
-            <div class="table_container">
+            <div class="insights_container">
 
-                <div class="insights_body">
-                    Insights
+                <div class="report_card">
+
+                    <h3>Report Summary</h3>
+
+                    <div id="report_summary"></div>
+
+                </div>
+
+                <div class="report_card">
+
+                    <h3>Approval Status</h3>
+
+                    <div id="approval_status"></div>
+
+                </div>
+
+                <div class="report_card">
+
+                    <h3>Vendor Analysis</h3>
+
+                    <div id="vendor_list"></div>
+
+                </div>
+
+                <div class="report_card">
+
+                    <h3>Insights</h3>
+
+                    <div id="local_list"></div>
+
+                </div>
+
+                <div class="report_card">
+
+                    <h3>AI Analysis</h3>
+
+                    <div id="ai_list"></div>
+
                 </div>
 
             </div>
