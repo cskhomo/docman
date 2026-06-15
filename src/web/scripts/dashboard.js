@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", init);
 
 let invoices = [];
-
 let report = {};
 let local_insights = [];
 let ai_insights = [];
@@ -9,7 +8,6 @@ let ai_insights = [];
 async function init() {
     await load_data();
     render_table();
-
     await load_insights();
     render_insights();
 }
@@ -25,7 +23,6 @@ async function load_data() {
         });
 
         const data = await res.json();
-
         invoices = data.documents || [];
     } catch (err) {
         invoices = [];
@@ -35,13 +32,11 @@ async function load_data() {
 async function load_insights() {
     try {
         const res = await fetch("/insights");
-
         const data = await res.json();
 
         report = data.report || {};
         local_insights = data.local_insights || [];
         ai_insights = data.ai_insights || [];
-
     } catch (err) {
         report = {};
         local_insights = [];
@@ -51,11 +46,9 @@ async function load_insights() {
 
 function render_table() {
     const body = document.getElementById("table_body");
-
     body.innerHTML = "";
 
     invoices.forEach((doc, index) => {
-
         const row = document.createElement("tr");
 
         row.innerHTML = `
@@ -74,11 +67,28 @@ function render_table() {
 
     window.invoices = invoices;
 
-    if (window.filter_checkboxes) window.filter_checkboxes();
+    attach_single_selection_logic();
+
+    if (window.filter_checkboxes) {
+        window.filter_checkboxes();
+    }
+}
+
+function attach_single_selection_logic() {
+    const checkboxes = document.querySelectorAll("input[type='checkbox']");
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener("change", () => {
+            if (!cb.checked) return;
+
+            checkboxes.forEach(other => {
+                if (other !== cb) other.checked = false;
+            });
+        });
+    });
 }
 
 function render_insights() {
-
     const summary = document.getElementById("report_summary");
     const approval = document.getElementById("approval_status");
     const vendors = document.getElementById("vendor_list");
@@ -92,18 +102,15 @@ function render_insights() {
     ai.innerHTML = "";
 
     if (report.summary) {
-
         summary.innerHTML = `
             <div class="report_row">
                 <span class="report_label">Invoices</span>
                 <span class="report_value">${report.summary.invoice_count || 0}</span>
             </div>
-
             <div class="report_row">
                 <span class="report_label">Total Spend</span>
                 <span class="report_value">${report.summary.total_spend || 0}</span>
             </div>
-
             <div class="report_row">
                 <span class="report_label">Total VAT</span>
                 <span class="report_value">${report.summary.total_vat || 0}</span>
@@ -112,18 +119,15 @@ function render_insights() {
     }
 
     if (report.approval_status) {
-
         approval.innerHTML = `
             <div class="report_row">
                 <span class="report_label">Approved</span>
                 <span class="report_value">${report.approval_status.approved || 0}</span>
             </div>
-
             <div class="report_row">
                 <span class="report_label">Pending</span>
                 <span class="report_value">${report.approval_status.pending || 0}</span>
             </div>
-
             <div class="report_row">
                 <span class="report_label">Rejected</span>
                 <span class="report_value">${report.approval_status.rejected || 0}</span>
@@ -132,9 +136,7 @@ function render_insights() {
     }
 
     if (report.vendors && Object.keys(report.vendors).length) {
-
         Object.entries(report.vendors).forEach(([vendor, spend]) => {
-
             vendors.innerHTML += `
                 <div class="vendor_item">
                     <span>${vendor}</span>
@@ -142,59 +144,36 @@ function render_insights() {
                 </div>
             `;
         });
-
     } else {
-
-        vendors.innerHTML = `
-            <div class="empty_text">
-                No vendor data available
-            </div>
-        `;
+        vendors.innerHTML = `<div class="empty_text">No vendor data available</div>`;
     }
 
     if (local_insights.length) {
-
         local_insights.forEach(item => {
-
             local.innerHTML += `
                 <div class="insight_item">
                     ${item.text || ""}
                 </div>
             `;
         });
-
     } else {
-
-        local.innerHTML = `
-            <div class="empty_text">
-                No insights available
-            </div>
-        `;
+        local.innerHTML = `<div class="empty_text">No insights available</div>`;
     }
 
     if (ai_insights.length) {
-
         ai_insights.forEach(item => {
-
             ai.innerHTML += `
                 <div class="insight_item">
                     ${item.text || ""}
                 </div>
             `;
         });
-
     } else {
-
-        ai.innerHTML = `
-            <div class="empty_text">
-                AI analysis unavailable
-            </div>
-        `;
+        ai.innerHTML = `<div class="empty_text">AI analysis unavailable</div>`;
     }
 }
 
 function get_status(doc) {
-
     if (doc.reviewer_status === "rejected") return "rejected by reviewer";
     if (doc.manager_status === "rejected") return "rejected by manager";
     if (doc.admin_status === "rejected") return "rejected by admin";
@@ -207,7 +186,6 @@ function get_status(doc) {
 }
 
 async function show_dashboard() {
-
     await load_data();
     render_table();
 
@@ -219,11 +197,11 @@ async function show_dashboard() {
 
     document.getElementById("approve_btn").hidden = false;
     document.getElementById("reject_btn").hidden = false;
+
     document.querySelector('[onclick="export_excel()"]').hidden = false;
 }
 
 async function show_insights() {
-
     await load_insights();
     render_insights();
 
@@ -235,24 +213,18 @@ async function show_insights() {
 
     document.getElementById("approve_btn").hidden = true;
     document.getElementById("reject_btn").hidden = true;
+
     document.querySelector('[onclick="export_excel()"]').hidden = true;
 }
 
 function export_pdf() {
-
     const dashboard = document.getElementById("dashboard_view");
 
     if (!dashboard.hidden) {
-
         const win = window.open("", "", "width=900,height=700");
+        const table = document.querySelector(".invoice_table").cloneNode(true);
 
-        const table = document
-            .querySelector(".invoice_table")
-            .cloneNode(true);
-
-        table
-            .querySelectorAll("th:first-child, td:first-child")
-            .forEach(el => el.remove());
+        table.querySelectorAll("th:first-child, td:first-child").forEach(el => el.remove());
 
         win.document.write(`
             <html>
@@ -261,11 +233,7 @@ function export_pdf() {
                 <style>
                     body { font-family: Arial; }
                     table { width:100%; border-collapse: collapse; }
-                    th, td {
-                        border:1px solid #ddd;
-                        padding:8px;
-                        font-size:12px;
-                    }
+                    th, td { border:1px solid #ddd; padding:8px; font-size:12px; }
                     th { background:#f5f5f5; }
                 </style>
             </head>
@@ -278,7 +246,6 @@ function export_pdf() {
 
         win.document.close();
         win.print();
-
         return;
     }
 
@@ -295,7 +262,6 @@ function export_pdf() {
             </style>
         </head>
         <body>
-
             <h1>Insights Report</h1>
 
             <h2>Summary</h2>
@@ -309,26 +275,13 @@ function export_pdf() {
             <p>Rejected: ${report.approval_status?.rejected || 0}</p>
 
             <h2>Vendor Analysis</h2>
-
-            ${report.vendors
-                ? Object.entries(report.vendors).map(
-                    ([v, s]) => `<p>${v}: ${s}</p>`
-                ).join("")
-                : ""
-            }
+            ${report.vendors ? Object.entries(report.vendors).map(([v, s]) => `<p>${v}: ${s}</p>`).join("") : ""}
 
             <h2>Insights</h2>
-
-            ${local_insights.map(
-                item => `<p>${item.text}</p>`
-            ).join("")}
+            ${local_insights.map(item => `<p>${item.text}</p>`).join("")}
 
             <h2>AI Analysis</h2>
-
-            ${ai_insights.map(
-                item => `<p>${item.text}</p>`
-            ).join("")}
-
+            ${ai_insights.map(item => `<p>${item.text}</p>`).join("")}
         </body>
         </html>
     `);
@@ -338,21 +291,11 @@ function export_pdf() {
 }
 
 function export_excel() {
-
     let csv = [];
 
-    csv.push([
-        "Invoice #",
-        "Vendor",
-        "Date",
-        "Due",
-        "VAT",
-        "Total",
-        "Status"
-    ].join(","));
+    csv.push(["Invoice #","Vendor","Date","Due","VAT","Total","Status"].join(","));
 
     invoices.forEach(doc => {
-
         csv.push([
             doc.invoice_number || "",
             doc.vendor || "",
@@ -364,14 +307,10 @@ function export_excel() {
         ].join(","));
     });
 
-    const blob = new Blob([csv.join("\n")], {
-        type: "text/csv"
-    });
-
+    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
-
     a.href = url;
     a.download = "invoices.csv";
     a.click();
@@ -380,7 +319,6 @@ function export_excel() {
 }
 
 function approve_selected() {}
-
 function reject_selected() {}
 
 function goto_upload() {

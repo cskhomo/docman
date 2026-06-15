@@ -10,22 +10,21 @@ async function load_user() {
     const token = localStorage.getItem("token");
 
     try {
-        const res = await fetch("/auth/me", {
+        const res = await fetch("/auth/validate", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
-        user = await res.json();
+        const data = await res.json();
+        user = data.user || null;
     } catch (err) {
         user = null;
     }
 }
 
 function can_act(doc) {
-
     if (!user) return false;
-
     if (user.role === "viewer") return false;
 
     if (doc.reviewer_status === "rejected") return false;
@@ -50,9 +49,7 @@ function can_act(doc) {
 }
 
 function filter_checkboxes() {
-
     document.querySelectorAll("input[type='checkbox']").forEach(cb => {
-
         const index = cb.getAttribute("data-index");
         const doc = window.invoices?.[index];
 
@@ -68,17 +65,15 @@ function filter_checkboxes() {
     });
 }
 
-async function get_selected_docs() {
-
-    const selected = [];
+function get_selected_doc() {
+    let selected = null;
 
     document.querySelectorAll("input[type='checkbox']:checked").forEach(cb => {
-
         const index = cb.getAttribute("data-index");
         const doc = window.invoices?.[index];
 
         if (doc) {
-            selected.push(doc.invoice_number);
+            selected = doc.invoice_number;
         }
     });
 
@@ -86,29 +81,30 @@ async function get_selected_docs() {
 }
 
 async function send_action(action) {
+    const invoice_number = get_selected_doc();
 
-    const invoices = await get_selected_docs();
-
-    if (!invoices.length) return;
-
+    if (!invoice_number) return;
     if (!user || user.role === "viewer") return;
 
     const token = localStorage.getItem("token");
 
-    await fetch("/documents/approve", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            action,
-            role: user.role,
-            invoices
-        })
-    });
+    try {
+        await fetch("/status", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                action,
+                invoice_number
+            })
+        });
 
-    window.location.reload();
+        window.location.reload();
+    } catch (err) {
+        console.error("Status update failed", err);
+    }
 }
 
 function approve_selected() {

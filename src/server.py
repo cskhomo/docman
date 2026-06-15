@@ -8,6 +8,7 @@ from routes.auth import router as auth_router
 from routes.documents import router as documents_router
 from routes.insights import router as insights_router
 from routes.reports import router as reports_router
+from routes.status import router as status_router
 
 app = FastAPI()
 
@@ -19,6 +20,7 @@ app.include_router(auth_router)
 app.include_router(documents_router)
 app.include_router(insights_router)
 app.include_router(reports_router)
+app.include_router(status_router)
 
 app.mount("/web", StaticFiles(directory=WEB_DIR, html=True), name="web")
 

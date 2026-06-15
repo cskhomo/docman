@@ -54,3 +54,34 @@ def insert_invoice(document):
 
     conn.commit()
     conn.close()
+    
+def update_invoice_status(
+    invoice_number: str,
+    column: str,
+    status: str
+):
+
+    if column not in (
+        "reviewer_status",
+        "manager_status",
+        "admin_status"
+    ):
+        raise ValueError("Invalid status column")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        f"""
+        UPDATE invoices
+        SET {column} = ?
+        WHERE invoice_number = ?
+        """,
+        (
+            status,
+            invoice_number
+        )
+    )
+
+    conn.commit()
+    conn.close()

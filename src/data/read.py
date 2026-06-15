@@ -51,3 +51,31 @@ def get_all_invoices():
     conn.close()
 
     return [dict(row) for row in rows]
+    
+def get_invoice_by_number(invoice_number: str):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            invoice_number,
+            vendor,
+            date,
+            due,
+            currency,
+            vat,
+            total,
+            reviewer_status,
+            manager_status,
+            admin_status
+        FROM invoices
+        WHERE invoice_number = ?
+    """, (invoice_number,))
+
+    row = cursor.fetchone()
+
+    conn.close()
+
+    return dict(row) if row else None
