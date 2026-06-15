@@ -75,5 +75,18 @@ function goto_welcome() {
 }
 
 function goto_dashboard() {
-    window.location.replace("/web/pages/dashboard.html");
+    window.location.href = "/web/pages/dashboard.html";
+}
+
+function goto_insights() {
+    window.location.href = "/web/pages/insights.html";
+}
+
+function goto_upload() {
+    window.location.href = "/web/pages/upload.html";
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/web/pages/welcome.html";
 }
