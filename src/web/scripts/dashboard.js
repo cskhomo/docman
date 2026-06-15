@@ -43,7 +43,6 @@ async function load_insights() {
         ai_insights = data.ai_insights || [];
 
     } catch (err) {
-
         report = {};
         local_insights = [];
         ai_insights = [];
@@ -72,10 +71,10 @@ function render_table() {
 
         body.appendChild(row);
     });
-    
+
     window.invoices = invoices;
 
-	if (window.filter_checkboxes) window.filter_checkboxes();
+    if (window.filter_checkboxes) window.filter_checkboxes();
 }
 
 function render_insights() {
@@ -97,17 +96,17 @@ function render_insights() {
         summary.innerHTML = `
             <div class="report_row">
                 <span class="report_label">Invoices</span>
-                <span class="report_value">${report.summary.invoice_count}</span>
+                <span class="report_value">${report.summary.invoice_count || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Total Spend</span>
-                <span class="report_value">${report.summary.total_spend}</span>
+                <span class="report_value">${report.summary.total_spend || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Total VAT</span>
-                <span class="report_value">${report.summary.total_vat}</span>
+                <span class="report_value">${report.summary.total_vat || 0}</span>
             </div>
         `;
     }
@@ -117,29 +116,29 @@ function render_insights() {
         approval.innerHTML = `
             <div class="report_row">
                 <span class="report_label">Approved</span>
-                <span class="report_value">${report.approval_status.approved}</span>
+                <span class="report_value">${report.approval_status.approved || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Pending</span>
-                <span class="report_value">${report.approval_status.pending}</span>
+                <span class="report_value">${report.approval_status.pending || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Rejected</span>
-                <span class="report_value">${report.approval_status.rejected}</span>
+                <span class="report_value">${report.approval_status.rejected || 0}</span>
             </div>
         `;
     }
 
-    if (report.vendors && report.vendors.length) {
+    if (report.vendors && Object.keys(report.vendors).length) {
 
-        report.vendors.forEach(item => {
+        Object.entries(report.vendors).forEach(([vendor, spend]) => {
 
             vendors.innerHTML += `
                 <div class="vendor_item">
-                    <span>${item.vendor}</span>
-                    <span>${item.spend}</span>
+                    <span>${vendor}</span>
+                    <span>${spend}</span>
                 </div>
             `;
         });
@@ -159,7 +158,7 @@ function render_insights() {
 
             local.innerHTML += `
                 <div class="insight_item">
-                    ${item.text}
+                    ${item.text || ""}
                 </div>
             `;
         });
@@ -179,7 +178,7 @@ function render_insights() {
 
             ai.innerHTML += `
                 <div class="insight_item">
-                    ${item.text}
+                    ${item.text || ""}
                 </div>
             `;
         });
@@ -210,7 +209,6 @@ function get_status(doc) {
 async function show_dashboard() {
 
     await load_data();
-
     render_table();
 
     document.getElementById("dashboard_view").hidden = false;
@@ -227,7 +225,6 @@ async function show_dashboard() {
 async function show_insights() {
 
     await load_insights();
-
     render_insights();
 
     document.getElementById("dashboard_view").hidden = true;
@@ -239,7 +236,6 @@ async function show_insights() {
     document.getElementById("approve_btn").hidden = true;
     document.getElementById("reject_btn").hidden = true;
     document.querySelector('[onclick="export_excel()"]').hidden = true;
-    
 }
 
 function export_pdf() {
@@ -293,18 +289,9 @@ function export_pdf() {
         <head>
             <title>Insights Report</title>
             <style>
-                body {
-                    font-family: Arial;
-                    padding:20px;
-                }
-
-                h2 {
-                    margin-top:20px;
-                }
-
-                p {
-                    margin:8px 0;
-                }
+                body { font-family: Arial; padding:20px; }
+                h2 { margin-top:20px; }
+                p { margin:8px 0; }
             </style>
         </head>
         <body>
@@ -312,13 +299,11 @@ function export_pdf() {
             <h1>Insights Report</h1>
 
             <h2>Summary</h2>
-
             <p>Invoices: ${report.summary?.invoice_count || 0}</p>
             <p>Total Spend: ${report.summary?.total_spend || 0}</p>
             <p>Total VAT: ${report.summary?.total_vat || 0}</p>
 
             <h2>Approval Status</h2>
-
             <p>Approved: ${report.approval_status?.approved || 0}</p>
             <p>Pending: ${report.approval_status?.pending || 0}</p>
             <p>Rejected: ${report.approval_status?.rejected || 0}</p>
@@ -326,8 +311,8 @@ function export_pdf() {
             <h2>Vendor Analysis</h2>
 
             ${report.vendors
-                ? report.vendors.map(
-                    item => `<p>${item.vendor}: ${item.spend}</p>`
+                ? Object.entries(report.vendors).map(
+                    ([v, s]) => `<p>${v}: ${s}</p>`
                 ).join("")
                 : ""
             }
@@ -379,12 +364,9 @@ function export_excel() {
         ].join(","));
     });
 
-    const blob = new Blob(
-        [csv.join("\n")],
-        {
-            type: "text/csv"
-        }
-    );
+    const blob = new Blob([csv.join("\n")], {
+        type: "text/csv"
+    });
 
     const url = URL.createObjectURL(blob);
 

@@ -4,7 +4,6 @@ let user = null;
 
 async function init() {
     await load_user();
-    await load_permissions();
 }
 
 async function load_user() {
@@ -90,7 +89,9 @@ async function send_action(action) {
 
     const invoices = await get_selected_docs();
 
-    if (invoices.length === 0) return;
+    if (!invoices.length) return;
+
+    if (!user || user.role === "viewer") return;
 
     const token = localStorage.getItem("token");
 
