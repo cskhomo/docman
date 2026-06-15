@@ -1,47 +1,84 @@
 import json
 from os import getenv
+
 from dotenv import load_dotenv
 from groq import Groq
 
 load_dotenv()
 
-client = Groq(api_key=getenv("GROQ"))
+client = Groq(
+    api_key=getenv("GROQ")
+)
 
 
 def generate_local_insights(report):
 
     insights = []
 
-    vendors = report["vendors"]
+    vendors = report.get("vendors", [])
 
     if vendors:
 
-        biggest_vendor = max(vendors.items(), key=lambda x: x[1])
+        top_vendor = vendors[0]
 
         insights.append({
             "source": "local",
-            "text": f"Highest spending vendor is {biggest_vendor[0]}"
+            "text": (
+                f"Highest spending vendor is "
+                f"{top_vendor['vendor']}"
+            )
         })
 
-    pending = report["approval_status"]["pending"]
-    if pending > 0:
+    summary = report["summary"]
+
+    invoice_count = summary["invoice_count"]
+    total_spend = summary["total_spend"]
+    total_vat = summary["total_vat"]
+
+    status = report["approval_status"]
+
+    pending = status["pending"]
+    rejected = status["rejected"]
+
+    if pending > 0 and invoice_count > 0:
+
+        percent = round(
+            (pending / invoice_count) * 100,
+            1
+        )
+
         insights.append({
             "source": "local",
-            "text": f"{pending} invoices still require approval"
+            "text": (
+                f"{percent}% of invoices are "
+                f"still pending approval"
+            )
         })
 
-    rejected = report["approval_status"]["rejected"]
     if rejected > 0:
+
         insights.append({
             "source": "local",
-            "text": f"{rejected} invoices have been rejected"
+            "text": (
+                f"{rejected} invoices have "
+                f"been rejected"
+            )
         })
-
-    total_spend = report["summary"]["total_spend"]
 
     insights.append({
         "source": "local",
-        "text": f"Total recorded spend is {total_spend:.2f}"
+        "text": (
+            f"Total recorded spend is "
+            f"{total_spend:.2f}"
+        )
+    })
+
+    insights.append({
+        "source": "local",
+        "text": (
+            f"Total VAT recorded is "
+            f"{total_vat:.2f}"
+        )
     })
 
     return insights
@@ -52,19 +89,19 @@ def generate_ai_insights(report):
     prompt = f"""
 You are a financial analyst.
 
-Analyze this report:
+Review the following invoice report and provide exactly 3 concise business insights.
 
-{json.dumps(report, indent=4)}
+Focus on:
+- spending trends
+- approval bottlenecks
+- vendor concentration
+- unusual observations
 
-Return ONLY valid JSON:
+Return only plain text bullet points.
 
-{{
-    "insights": [
-        "Insight 1",
-        "Insight 2",
-        "Insight 3"
-    ]
-}}
+Report:
+
+{json.dumps(report, indent=2)}
 """
 
     try:
@@ -72,20 +109,42 @@ Return ONLY valid JSON:
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             temperature=0.3,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
         )
 
-        content = response.choices[0].message.content
-        parsed = json.loads(content)
+        content = (
+            response
+            .choices[0]
+            .message
+            .content
+            .strip()
+        )
+
+        lines = [
+            line.strip("-• ").strip()
+            for line in content.splitlines()
+            if line.strip()
+        ]
 
         return [
-            {"source": "ai", "text": i}
-            for i in parsed.get("insights", [])
+            {
+                "source": "ai",
+                "text": line
+            }
+            for line in lines[:5]
         ]
 
     except Exception as err:
 
         return [{
             "source": "ai",
-            "text": f"AI analysis unavailable: {str(err)}"
+            "text": (
+                f"AI analysis unavailable: "
+                f"{str(err)}"
+            )
         }]

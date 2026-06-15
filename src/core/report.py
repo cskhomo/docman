@@ -14,15 +14,20 @@ def build_report(invoices):
 
     for invoice in invoices:
 
-        total_spend += invoice["total"] or 0
-        total_vat += invoice["vat"] or 0
+        total = invoice.get("total") or 0
+        vat = invoice.get("vat") or 0
 
-        vendor_spend[invoice["vendor"]] += invoice["total"] or 0
+        total_spend += total
+        total_vat += vat
+
+        vendor = invoice.get("vendor") or "Unknown"
+
+        vendor_spend[vendor] += total
 
         statuses = [
-            invoice["reviewer_status"],
-            invoice["manager_status"],
-            invoice["admin_status"]
+            invoice.get("reviewer_status"),
+            invoice.get("manager_status"),
+            invoice.get("admin_status")
         ]
 
         if "rejected" in statuses:
@@ -34,11 +39,17 @@ def build_report(invoices):
         else:
             approved += 1
 
+    vendors = sorted(
+        vendor_spend.items(),
+        key=lambda item: item[1],
+        reverse=True
+    )
+
     return {
         "summary": {
-            "total_spend": total_spend,
-            "total_vat": total_vat,
-            "invoice_count": len(invoices)
+            "invoice_count": len(invoices),
+            "total_spend": round(total_spend, 2),
+            "total_vat": round(total_vat, 2)
         },
 
         "approval_status": {
@@ -47,5 +58,11 @@ def build_report(invoices):
             "rejected": rejected
         },
 
-        "vendors": dict(vendor_spend)
+        "vendors": [
+            {
+                "vendor": vendor,
+                "spend": round(spend, 2)
+            }
+            for vendor, spend in vendors
+        ]
     }
