@@ -115,10 +115,13 @@ function show_loading() {
         index++;
 
         if (index >= loading_messages.length) {
-            loading_text.textContent = "You will be redirected soon..."
+            loading_text.textContent = "Performing final checks..."
+            clearInterval(loading_timer);
+            return;
         }
 
         loading_text.textContent = loading_messages[index];
+        
 
     }, 5000);
 }

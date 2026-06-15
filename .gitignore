@@ -1,3 +1,4 @@
 spec.pdf
 *env*
 *pycache*
+*temp/
