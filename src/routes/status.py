@@ -1,19 +1,17 @@
 from fastapi import APIRouter
 from fastapi import Depends
-from fastapi.security import (
-    HTTPBearer,
-    HTTPAuthorizationCredentials
-)
+from fastapi.security import HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
 from core.authorise import decode_token
-from core.update import apply_status_update
-
+from core.update import update_status
 from data.read import get_invoice_by_number
-from data.write import update_invoice_status
+from data.write import approve_invoice
+from data.write import reject_invoice
+
 
 router = APIRouter()
-
 security = HTTPBearer()
 
 
@@ -23,7 +21,7 @@ class StatusRequest(BaseModel):
 
 
 @router.post("/status")
-def update_status(
+def status_update(
     data: StatusRequest,
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
@@ -32,49 +30,17 @@ def update_status(
 
     try:
         payload = decode_token(token)
-
     except Exception:
-        return {
-            "status": "fail",
-            "reason": "Invalid token"
-        }
+        return {"status": "fail", "reason": "Invalid token"}
 
-    role = payload["role"]
-
-    if data.action not in ("approve", "reject"):
-        return {
-            "status": "fail",
-            "reason": "Invalid action"
-        }
-
-    invoice = get_invoice_by_number(
-        data.invoice_number
-    )
+    invoice = get_invoice_by_number(data.invoice_number)
 
     if not invoice:
-        return {
-            "status": "fail",
-            "reason": "Invoice not found"
-        }
+        return {"status": "fail", "reason": "Invoice not found"}
 
-    update = apply_status_update(
-        invoice,
-        role,
-        data.action
-    )
+    result = update_status(invoice=invoice, user=payload, action=data.action)
 
-    if not update:
-        return {
-            "status": "fail",
-            "reason": "Action not permitted"
-        }
+    if not result["ok"]:
+        return {"status": "fail", "reason": result["reason"]}
 
-    update_invoice_status(
-        data.invoice_number,
-        update["column"],
-        update["status"]
-    )
-
-    return {
-        "status": "success"
-    }
+    return {"status": "success"}

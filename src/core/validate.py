@@ -15,8 +15,6 @@ REQUIRED_FIELDS = [
     "invoice_number",
     "vendor",
     "date",
-    "due",
-    "currency",
     "vat",
     "total"
 ]

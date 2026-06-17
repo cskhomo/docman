@@ -32,28 +32,14 @@ def extract_document(file_path, mime_type):
         )
     )
 
-    processor_path = client.processor_path(
-        project,
-        location,
-        processor
-    )
+    processor_path = client.processor_path(project, location, processor)
 
     with open(file_path, "rb") as file:
         content = file.read()
 
-    raw_document = documentai.RawDocument(
-        content=content,
-        mime_type=mime_type
-    )
-
-    request = documentai.ProcessRequest(
-        name=processor_path,
-        raw_document=raw_document
-    )
-
-    result = client.process_document(
-        request=request
-    )
+    raw_document = documentai.RawDocument(content=content, mime_type=mime_type)
+    request = documentai.ProcessRequest(name=processor_path, raw_document=raw_document)
+    result = client.process_document(request=request)
 
     entities = []
 
@@ -62,7 +48,6 @@ def extract_document(file_path, mime_type):
         entities.append({
             "type": entity.type_,
             "mention_text": entity.mention_text,
-            "confidence": entity.confidence,
             "normalized_value": (
                 entity.normalized_value.text
                 if entity.normalized_value

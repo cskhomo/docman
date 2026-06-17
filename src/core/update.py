@@ -1,55 +1,20 @@
-def apply_status_update(invoice, role: str, action: str):
+from data.write import approve_invoice, reject_invoice
 
-    if role == "viewer":
-        return False
 
-    statuses = [
-        invoice["reviewer_status"],
-        invoice["manager_status"],
-        invoice["admin_status"]
-    ]
+def update_status(invoice, user, action):
 
-    if "rejected" in statuses:
-        return False
+    owner_id = invoice["owner_id"]
+    user_id = user.get("id")
 
-    if statuses == ["approved", "approved", "approved"]:
-        return False
+    if owner_id != user_id:
+        return {"ok": False, "reason": "Not assigned to this user"}
 
-    if role == "reviewer":
+    if action == "reject":
+        reject_invoice(invoice["invoice_number"])
+        return {"ok": True}
 
-        if invoice["reviewer_status"] != "pending":
-            return False
+    if action == "approve":
+        approve_invoice(invoice["invoice_number"])
+        return {"ok": True}
 
-        return {
-            "column": "reviewer_status",
-            "status": "approved" if action == "approve" else "rejected"
-        }
-
-    if role == "manager":
-
-        if (
-            invoice["reviewer_status"] != "approved"
-            or invoice["manager_status"] != "pending"
-        ):
-            return False
-
-        return {
-            "column": "manager_status",
-            "status": "approved" if action == "approve" else "rejected"
-        }
-
-    if role == "admin":
-
-        if (
-            invoice["reviewer_status"] != "approved"
-            or invoice["manager_status"] != "approved"
-            or invoice["admin_status"] != "pending"
-        ):
-            return False
-
-        return {
-            "column": "admin_status",
-            "status": "approved" if action == "approve" else "rejected"
-        }
-
-    return False
+    return {"ok": False, "reason": "Invalid action"}

@@ -17,28 +17,24 @@ from data.log import log_invoice
 router = APIRouter()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-CACHE_DIR = BASE_DIR / "storage" / "temp"
+TEMP_DIR = BASE_DIR / "storage" / "temp"
 
-CACHE_DIR.mkdir(parents=True, exist_ok=True)
+TEMP_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @router.post("/upload")
 async def upload(file: UploadFile = File(...)):
 
-    file_path = CACHE_DIR / file.filename
+    file_path = TEMP_DIR / file.filename
     content = await file.read()
 
     with open(file_path, "wb") as f:
         f.write(content)
 
-    extract_document(
-        file_path=str(file_path),
-        mime_type="application/pdf"
-    )
+    extract_document(file_path=str(file_path), mime_type="application/pdf")
 
     entities = load_raw_entities()
     invoice = transform_invoice(entities)
-
     save_invoice(invoice)
     validation = validate_invoice()
 
@@ -52,7 +48,6 @@ async def upload(file: UploadFile = File(...)):
             ),
             status_code=303
         )
-
 
     log_record = {
         "invoice_number": invoice.get("invoice_number"),

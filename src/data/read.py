@@ -36,13 +36,10 @@ def get_all_invoices():
             invoice_number,
             vendor,
             date,
-            due,
-            currency,
             vat,
             total,
-            reviewer_status,
-            manager_status,
-            admin_status
+            status,
+            owner_id
         FROM invoices
         ORDER BY id DESC
     """)
@@ -63,13 +60,10 @@ def get_invoice_by_number(invoice_number: str):
             invoice_number,
             vendor,
             date,
-            due,
-            currency,
             vat,
             total,
-            reviewer_status,
-            manager_status,
-            admin_status
+            status,
+            owner_id
         FROM invoices
         WHERE invoice_number = ?
     """, (invoice_number,))
