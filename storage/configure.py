@@ -44,21 +44,13 @@ def create_tables(connection):
             invoice_number TEXT,
             vendor TEXT,
             date TEXT,
-            due TEXT,
-            currency TEXT,
             vat REAL,
             total REAL,
-
-            reviewer_status TEXT NOT NULL DEFAULT 'pending'
-                CHECK(reviewer_status IN ('pending', 'approved', 'rejected')),
-
-            manager_status TEXT NOT NULL DEFAULT 'pending'
-                CHECK(manager_status IN ('pending', 'approved', 'rejected')),
-
-            admin_status TEXT NOT NULL DEFAULT 'pending'
-                CHECK(admin_status IN ('pending', 'approved', 'rejected'))
-        );
-    """)
+            status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'approved', 'rejected')),
+            owner_id INTEGER,
+            FOREIGN KEY (owner_id) REFERENCES accounts(id)
+    );
+""")
 
     connection.commit()
 
