@@ -4,5 +4,23 @@
         "vendor": "Sliced Invoices",
         "amount": 93.5,
         "hash": "1000c3a2a7a32a309c8f4466cec3e0de8adb74f95bd32e6595974f516959f4b7"
+    },
+    {
+        "invoice_number": "763320",
+        "vendor": "Polychemtex Inc.",
+        "amount": 1287.4,
+        "hash": "5546be947e2264610460fc39d1d57a8a1691e8b5ce7e1b8bbf8fbdbe7d389a77"
+    },
+    {
+        "invoice_number": "22162",
+        "vendor": "Contoso Asia",
+        "amount": 577271.99,
+        "hash": "1d9986c02e9fcbc7817ba7ff80514f19869a318d406bcc4b8bbac100c62ef201"
+    },
+    {
+        "invoice_number": "282183",
+        "vendor": "PROFILE CONSTRUCTION\nA blocked demo supplier",
+        "amount": 4459.88,
+        "hash": "b4157c62cdeba6b852e8a9be6d08b376fb8b1461de7889b84be34d0073f9dfbb"
     }
 ]
