@@ -10,7 +10,6 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-
 def create_user(email: str, password_hash: str, role: str = "viewer"):
     conn = get_db()
     cursor = conn.cursor()
@@ -59,7 +58,7 @@ def insert_invoice(document):
 
     conn.commit()
     conn.close()
-    
+
 def reject_invoice(invoice_number):
 
     conn = get_db()
@@ -71,38 +70,80 @@ def reject_invoice(invoice_number):
             status = 'rejected',
             owner_id = NULL
         WHERE invoice_number = ?
+        AND status = 'pending'
     """, (invoice_number,))
 
     conn.commit()
     conn.close()
-    
-def approve_invoice(invoice_number: str):
+
+
+def approve_invoice(invoice_number):
 
     conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT a.role
+        SELECT 
+            i.owner_id,
+            a.role
         FROM invoices i
-        JOIN accounts a
+        LEFT JOIN accounts a
             ON i.owner_id = a.id
         WHERE i.invoice_number = ?
     """, (invoice_number,))
 
-    row = cursor.fetchone()
 
-    if row is None:
+    invoice = cursor.fetchone()
+
+
+    if not invoice:
         conn.close()
-        raise ValueError("Invoice not found")
+        return False
 
-    next_role = {
-        "reviewer": "manager",
-        "manager": "admin"
-    }
 
-    role = row["role"]
+    current_role = invoice["role"]
 
-    if role == "admin":
+    if current_role == "reviewer":
+
+        cursor.execute("""
+            SELECT id
+            FROM accounts
+            WHERE role = 'manager'
+        """)
+
+        manager = cursor.fetchone()
+
+
+        cursor.execute("""
+            UPDATE invoices
+            SET owner_id = ?
+            WHERE invoice_number = ?
+        """, (
+            manager["id"],
+            invoice_number
+        ))
+
+    elif current_role == "manager":
+
+        cursor.execute("""
+            SELECT id
+            FROM accounts
+            WHERE role = 'admin'
+        """)
+
+        admin = cursor.fetchone()
+
+
+        cursor.execute("""
+            UPDATE invoices
+            SET owner_id = ?
+            WHERE invoice_number = ?
+        """, (
+            admin["id"],
+            invoice_number
+        ))
+
+    elif current_role == "admin":
 
         cursor.execute("""
             UPDATE invoices
@@ -112,35 +153,13 @@ def approve_invoice(invoice_number: str):
             WHERE invoice_number = ?
         """, (invoice_number,))
 
-    elif role in next_role:
-
-        cursor.execute("""
-            SELECT id
-            FROM accounts
-            WHERE role = ?
-        """, (next_role[role],))
-
-        next_owner = cursor.fetchone()
-
-        if next_owner is None:
-            conn.close()
-            raise ValueError(
-                f"No account found for role '{next_role[role]}'"
-            )
-
-        cursor.execute("""
-            UPDATE invoices
-            SET owner_id = ?
-            WHERE invoice_number = ?
-        """, (
-            next_owner["id"],
-            invoice_number
-        ))
 
     else:
-
         conn.close()
-        raise ValueError(f"Invalid role: {role}")
+        return False
+
 
     conn.commit()
     conn.close()
+
+    return True

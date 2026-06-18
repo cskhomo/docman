@@ -81,6 +81,7 @@ async function show_dashboard() {
     document.getElementById("reject_btn").hidden = true;
 
     document.getElementById("export_excel_btn").hidden = false;
+    document.getElementById("export_pdf_btn").hidden = false; 
 }
 
 function goto_upload() {

@@ -26,21 +26,32 @@ def status_update(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
 
-    token = credentials.credentials
-
-    try:
-        payload = decode_token(token)
-    except Exception:
-        return {"status": "fail", "reason": "Invalid token"}
-
     invoice = get_invoice_by_number(data.invoice_number)
 
     if not invoice:
-        return {"status": "fail", "reason": "Invoice not found"}
+        return {
+            "status": "fail",
+            "reason": "Invoice not found"
+        }
 
-    result = update_status(invoice=invoice, user=payload, action=data.action)
 
-    if not result["ok"]:
-        return {"status": "fail", "reason": result["reason"]}
+    if data.action == "approve":
 
-    return {"status": "success"}
+        approve_invoice(data.invoice_number)
+
+
+    elif data.action == "reject":
+
+        reject_invoice(data.invoice_number)
+
+
+    else:
+        return {
+            "status": "fail",
+            "reason": "Invalid action"
+        }
+
+
+    return {
+        "status": "success"
+    }
