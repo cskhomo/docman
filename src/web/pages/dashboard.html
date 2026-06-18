@@ -1,116 +1,110 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
 
-    <link rel="stylesheet" href="/web/styles/dashboard.css">
-
-    <script src="/web/scripts/redirect.js" defer></script>
-    <script src="/web/scripts/dashboard.js" defer></script>
-    <script src="/web/scripts/approvals.js" defer></script>
+	<link rel="stylesheet" href="/web/styles/dashboard.css">
+	<script src="/web/scripts/redirect.js" defer></script>
+	<script src="/web/scripts/dashboard.js" defer></script>
 </head>
 
 <body>
+	<div class="container">
+		<div class="action_bar">
+			<div class="action_left">
+				<button onclick="goto_upload()">Upload Invoice</button>
+				<button onclick="export_pdf()">Export PDF</button>
+				<button id="export_excel_btn" onclick="export_excel()">Export Excel/CSV</button>
+			</div>
+			
+			<div class="action_right">
+				<button id="approve_btn" hidden onclick="approve_selected()">Approve</button>
+				<button id="reject_btn" class="reject" hidden onclick="reject_selected()">Reject </button>
+				<button class="logout_button" onclick="logout()">Logout</button>
+			</div>
+		</div>
 
-    <div class="container">
+		<div class="view_tabs">
+			<button id="dashboard_tab" class="tab_button active" onclick="show_dashboard()">Dashboard</button>
+			<button	id="queue_tab" class="tab_button" onclick="show_queue()">Queue</button>
+			<button id="insights_tab" class="tab_button" onclick="show_insights()">Insights</button>
+		</div>
 
-        <div class="action_bar">
+		<div id="dashboard_view">
+			<div class="table_container">
 
-            <div class="action_left">
-                <button onclick="goto_upload()">Upload Invoice</button>
-                <button onclick="export_pdf()">Export PDF</button>
-                <button onclick="export_excel()">Export Excel/CSV</button>
-            </div>
+				<table class="invoice_table">
+					<thead>
+						<tr>
+							<th>Invoice #</th>
+							<th>Vendor</th>
+							<th>Date</th>
+							<th>VAT</th>
+							<th>Total</th>
+							<th>Status</th>
+						</tr>
+					</thead>
 
-            <div class="action_right">
-                <button id="approve_btn" onclick="approve_selected()">Approve</button>
-                <button id="reject_btn" class="reject" onclick="reject_selected()">Reject</button>
-                <button class="logout_button" onclick="logout()">Logout</button>
-            </div>
+					<tbody id="dashboard_table_body"></tbody>
+				</table>
 
-        </div>
+				<div id="dashboard_empty" class="empty_state" hidden> No invoices have been uploaded yet.</div>
+			</div>
+		</div>
 
-        <div class="view_tabs">
 
-            <button
-                id="dashboard_tab"
-                class="tab_button active"
-                onclick="show_dashboard()">
-                Dashboard
-            </button>
+		<div id="queue_view" hidden>
+			<div class="table_container">
+				<table class="invoice_table">
+					<thead>
+						<tr>
+							<th>Select</th>
+							<th>Invoice #</th>
+							<th>Vendor</th>
+							<th>Date</th>
+							<th>VAT</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody id="queue_table_body"></tbody>
+				</table>
+	
+				<div id="queue_empty" class="empty_state" hidden>There are currently no invoices assigned to you.</div>
+			</div>
+		</div>
 
-            <button
-                id="insights_tab"
-                class="tab_button"
-                onclick="show_insights()">
-                Insights
-            </button>
 
-        </div>
+		<div id="insights_view" hidden>
+			<div class="insights_container">
+				<div class="report_card">
+					<h3>Report Summary</h3>
+					<div id="report_summary"></div>
+				</div>
 
-        <div id="dashboard_view">
+				<div class="report_card">
+					<h3>Approval Status</h3>
+					<div id="approval_status"></div>
+				</div>
 
-            <div class="table_container">
+				<div class="report_card">
+					<h3>Vendor Analysis</h3>
+					<div id="vendor_list"></div>
+				</div>
 
-                <table class="invoice_table">
+				<div class="report_card">
+					<h3>Insights</h3>
+					<div id="local_list"></div>
+				</div>
 
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Invoice #</th>
-                            <th>Vendor</th>
-                            <th>Date</th>
-                            <th>Due</th>
-                            <th>VAT</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="table_body"></tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-        <div id="insights_view" hidden>
-
-            <div class="insights_container">
-
-                <div class="report_card">
-                    <h3>Report Summary</h3>
-                    <div id="report_summary"></div>
-                </div>
-
-                <div class="report_card">
-                    <h3>Approval Status</h3>
-                    <div id="approval_status"></div>
-                </div>
-
-                <div class="report_card">
-                    <h3>Vendor Analysis</h3>
-                    <div id="vendor_list"></div>
-                </div>
-
-                <div class="report_card">
-                    <h3>Insights</h3>
-                    <div id="local_list"></div>
-                </div>
-
-                <div class="report_card">
-                    <h3>AI Analysis</h3>
-                    <div id="ai_list"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</body>
+				<div class="report_card">
+					<h3>AI Analysis</h3>
+					<div id="ai_list"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</body>
 </html>

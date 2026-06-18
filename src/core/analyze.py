@@ -87,7 +87,7 @@ def generate_local_insights(report):
 def generate_ai_insights(report):
 
     prompt = f"""
-You are a financial analyst.
+You are a south african financial analyst.
 
 Review the following invoice report and provide exactly 3 concise business insights.
 
