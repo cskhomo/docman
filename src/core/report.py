@@ -21,23 +21,18 @@ def build_report(invoices):
         total_vat += vat
 
         vendor = invoice.get("vendor") or "Unknown"
-
         vendor_spend[vendor] += total
 
-        statuses = [
-            invoice.get("reviewer_status"),
-            invoice.get("manager_status"),
-            invoice.get("admin_status")
-        ]
+        status = invoice.get("status")
 
-        if "rejected" in statuses:
+        if status == "approved":
+            approved += 1
+
+        elif status == "rejected":
             rejected += 1
 
-        elif "pending" in statuses:
-            pending += 1
-
         else:
-            approved += 1
+            pending += 1
 
     vendors = sorted(
         vendor_spend.items(),
