@@ -1,29 +1,5 @@
 [
     {
-        "invoice_number": "001",
-        "vendor": "TechCore Solutions (Pty) Ltd",
-        "amount": 24150.0,
-        "hash": "cf521a661507f646de0652d18b6d40a5e1f8eb62da2cb94e9f4fd8f6ae729a80"
-    },
-    {
-        "invoice_number": "002",
-        "vendor": "TechCore Solutions (Pty) Ltd",
-        "amount": 57040.0,
-        "hash": "7d664eb6add9fd57d963d7f3e62a0e76f0dcaba7fcff6b706876e515c111734a"
-    },
-    {
-        "invoice_number": "INV-2026-00069",
-        "vendor": "AXXIS FMS",
-        "amount": 8682.5,
-        "hash": "bb0b90a9559a0e732e1c8132a8174ac78cf345cfa60619cfd5c014e6b7dc9f2a"
-    },
-    {
-        "invoice_number": "INA27261",
-        "vendor": "RUMPHI ENTERPRISES LIMITED",
-        "amount": 13400.0,
-        "hash": "7e4b56f6a60e6d9d81c258ade7ec11cdf20ca781c22918695fb4e541de11f3bd"
-    },
-    {
         "invoice_number": "INV-3337",
         "vendor": "Sliced Invoices",
         "amount": 93.5,

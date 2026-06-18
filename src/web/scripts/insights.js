@@ -159,4 +159,6 @@ async function show_insights() {
     document.getElementById("reject_btn").hidden = true;
 
     document.getElementById("export_excel_btn").hidden = true;
+    document.getElementById("export_pdf_btn").hidden = false;
+
 }
