@@ -1,16 +1,19 @@
 document.addEventListener("DOMContentLoaded", init);
 
-let invoices = [];
+window.invoices = [];
 
 async function init() {
+
     await load_data();
     render_table();
 }
 
 async function load_data() {
+
     const token = localStorage.getItem("token");
 
     try {
+
         const res = await fetch("/documents", {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -18,11 +21,13 @@ async function load_data() {
         });
 
         const data = await res.json();
-        invoices = data.documents || [];
+
+        window.invoices = data.documents || [];
     }
 
     catch (err) {
-        invoices = [];
+
+        window.invoices = [];
     }
 }
 
@@ -33,14 +38,15 @@ function render_table() {
 
     body.innerHTML = "";
 
-    if (!invoices.length) {
+    if (!window.invoices.length) {
+
         empty.hidden = false;
         return;
     }
 
     empty.hidden = true;
 
-    invoices.forEach(doc => {
+    window.invoices.forEach(doc => {
 
         const row = document.createElement("tr");
 
@@ -60,6 +66,7 @@ function render_table() {
 async function show_dashboard() {
 
     await load_data();
+
     render_table();
 
     document.getElementById("dashboard_view").hidden = false;
@@ -76,97 +83,16 @@ async function show_dashboard() {
     document.getElementById("export_excel_btn").hidden = false;
 }
 
-function export_pdf() {
-
-    const win = window.open("", "", "width=900,height=700");
-
-    const table = document.querySelector("#dashboard_view .invoice_table").cloneNode(true);
-
-    win.document.write(`
-        <html>
-        <head>
-            <title>Invoice Report</title>
-
-            <style>
-                body {
-                    font-family: Arial;
-                }
-
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
-
-                th,
-                td {
-                    border: 1px solid #ddd;
-                    padding: 8px;
-                    font-size: 12px;
-                }
-
-                th {
-                    background: #f5f5f5;
-                }
-            </style>
-        </head>
-
-        <body>
-            <h3>Invoice Report</h3>
-            ${table.outerHTML}
-        </body>
-        </html>
-    `);
-
-    win.document.close();
-    win.print();
-}
-
-function export_excel() {
-
-    let csv = [];
-
-    csv.push([
-        "Invoice #",
-        "Vendor",
-        "Date",
-        "VAT",
-        "Total",
-        "Status"
-    ].join(","));
-
-    invoices.forEach(doc => {
-
-        csv.push([
-            doc.invoice_number || "",
-            doc.vendor || "",
-            doc.date || "",
-            doc.vat || 0,
-            doc.total || 0,
-            doc.status || ""
-        ].join(","));
-    });
-
-    const blob = new Blob(
-        [csv.join("\n")],
-        { type: "text/csv" }
-    );
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-
-    a.href = url;
-    a.download = "invoices.csv";
-    a.click();
-
-    URL.revokeObjectURL(url);
-}
-
 function goto_upload() {
-    window.location.href = "/web/pages/upload.html";
+
+    window.location.href =
+        "/web/pages/upload.html";
 }
 
 function logout() {
+
     localStorage.removeItem("token");
-    window.location.href = "/web/pages/welcome.html";
+
+    window.location.href =
+        "/web/pages/welcome.html";
 }

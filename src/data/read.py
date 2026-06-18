@@ -48,6 +48,34 @@ def get_all_invoices():
     conn.close()
 
     return [dict(row) for row in rows]
+
+def get_invoices_by_owner(owner_id: int):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            invoice_number,
+            vendor,
+            date,
+            vat,
+            total,
+            status,
+            owner_id
+        FROM invoices
+        WHERE owner_id = ?
+        AND status = 'pending'
+        ORDER BY id DESC
+    """, (owner_id,))
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
+    
     
 def get_invoice_by_number(invoice_number: str):
 

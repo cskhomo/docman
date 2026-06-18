@@ -1,6 +1,6 @@
-let report = {};
-let local_insights = [];
-let ai_insights = [];
+window.report = {};
+window.local_insights = [];
+window.ai_insights = [];
 
 async function load_insights() {
 
@@ -9,16 +9,16 @@ async function load_insights() {
         const res = await fetch("/insights");
         const data = await res.json();
 
-        report = data.report || {};
-        local_insights = data.local_insights || [];
-        ai_insights = data.ai_insights || [];
+        window.report = data.report || {};
+        window.local_insights = data.local_insights || [];
+        window.ai_insights = data.ai_insights || [];
     }
 
     catch (err) {
 
-        report = {};
-        local_insights = [];
-        ai_insights = [];
+        window.report = {};
+        window.local_insights = [];
+        window.ai_insights = [];
     }
 }
 
@@ -36,49 +36,49 @@ function render_insights() {
     local.innerHTML = "";
     ai.innerHTML = "";
 
-    if (report.summary) {
+    if (window.report.summary) {
 
         summary.innerHTML = `
             <div class="report_row">
                 <span class="report_label">Invoices</span>
-                <span class="report_value">${report.summary.invoice_count || 0}</span>
+                <span class="report_value">${window.report.summary.invoice_count || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Total Spend</span>
-                <span class="report_value">${report.summary.total_spend || 0}</span>
+                <span class="report_value">${window.report.summary.total_spend || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Total VAT</span>
-                <span class="report_value">${report.summary.total_vat || 0}</span>
+                <span class="report_value">${window.report.summary.total_vat || 0}</span>
             </div>
         `;
     }
 
-    if (report.approval_status) {
+    if (window.report.approval_status) {
 
         approval.innerHTML = `
             <div class="report_row">
                 <span class="report_label">Approved</span>
-                <span class="report_value">${report.approval_status.approved || 0}</span>
+                <span class="report_value">${window.report.approval_status.approved || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Pending</span>
-                <span class="report_value">${report.approval_status.pending || 0}</span>
+                <span class="report_value">${window.report.approval_status.pending || 0}</span>
             </div>
 
             <div class="report_row">
                 <span class="report_label">Rejected</span>
-                <span class="report_value">${report.approval_status.rejected || 0}</span>
+                <span class="report_value">${window.report.approval_status.rejected || 0}</span>
             </div>
         `;
     }
 
-    if (report.vendors && report.vendors.length) {
+    if (window.report.vendors?.length) {
 
-        report.vendors.forEach(item => {
+        window.report.vendors.forEach(item => {
 
             vendors.innerHTML += `
                 <div class="vendor_item">
@@ -98,9 +98,9 @@ function render_insights() {
         `;
     }
 
-    if (local_insights.length) {
+    if (window.local_insights.length) {
 
-        local_insights.forEach(item => {
+        window.local_insights.forEach(item => {
 
             local.innerHTML += `
                 <div class="insight_item">
@@ -119,9 +119,9 @@ function render_insights() {
         `;
     }
 
-    if (ai_insights.length) {
+    if (window.ai_insights.length) {
 
-        ai_insights.forEach(item => {
+        window.ai_insights.forEach(item => {
 
             ai.innerHTML += `
                 <div class="insight_item">
@@ -144,6 +144,7 @@ function render_insights() {
 async function show_insights() {
 
     await load_insights();
+
     render_insights();
 
     document.getElementById("dashboard_view").hidden = true;

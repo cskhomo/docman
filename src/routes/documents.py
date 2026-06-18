@@ -7,3 +7,4 @@ router = APIRouter()
 def get_documents():
     invoices = get_all_invoices()
     return {"documents": invoices}
+

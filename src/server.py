@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from routes.auth import router as auth_router
 from routes.upload import router as upload_router
 from routes.documents import router as documents_router
+from routes.que import router as que_router
 from routes.insights import router as insights_router
 from routes.status import router as status_router
 
@@ -16,6 +17,7 @@ WEB_DIR = Path(__file__).parent / "web"
 app.include_router(auth_router)
 app.include_router(upload_router)
 app.include_router(documents_router)
+app.include_router(que_router)
 app.include_router(insights_router)
 app.include_router(status_router)
 
